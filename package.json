@@ -1,10 +1,18 @@
 {
   "name": "openclaw-windows",
-  "productName": "openclaw-windows",
+  "productName": "OpenClaw-Windows",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "OpenClaw Desktop Client for Windows — an Electron wrapper for the OpenClaw AI gateway with built-in auto-update support",
   "main": ".vite/build/main.js",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicekid1/openclaw-windows.git"
+  },
+  "homepage": "https://github.com/nicekid1/openclaw-windows#readme",
+  "bugs": {
+    "url": "https://github.com/nicekid1/openclaw-windows/issues"
+  },
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -12,7 +20,7 @@
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\""
   },
-  "keywords": [],
+  "keywords": ["openclaw", "electron", "ai", "gateway", "desktop", "windows"],
   "author": {
     "name": "kanyifei",
     "email": "kanyifei84@gmail.com"

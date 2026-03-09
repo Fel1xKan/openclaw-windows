@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Build OpenClaw submodule
+        working-directory: packages/openclaw
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+          pnpm ui:build
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (Vite + Electron Forge)
+        run: npm run package
