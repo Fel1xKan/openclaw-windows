@@ -2,13 +2,13 @@ import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
-import fsExtra from 'fs-extra';
 import { spawn } from 'node:child_process';
 import http from 'node:http';
 import https from 'node:https';
 import { pipeline } from 'node:stream/promises';
 import { createGunzip } from 'node:zlib';
 import started from 'electron-squirrel-startup';
+import fsExtra from 'fs-extra';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
