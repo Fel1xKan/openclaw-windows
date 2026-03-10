@@ -1,19 +1,29 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 const path = require('path');
+const fs = require('fs-extra');
 
 module.exports = {
   packagerConfig: {
     asar: true,
-    // Include the built openclaw package as extra resources
-    extraResource: [
-      path.resolve(__dirname, 'packages/openclaw'),
-    ],
     name: 'OpenClaw',
-    // Ignore source files and unnecessary directories in the asar
-    ignore: [
-      /^\/packages/,  // Handled via extraResource
-    ],
+    afterExtract: [
+      async (extractPath, electronVersion, platform, arch, done) => {
+        // Copy packages/openclaw manually without dereferencing symlinks
+        // to massively speed up packaging and avoid symlink loops.
+        // During afterExtract, the mac app is always named "Electron.app" before rename.
+        const dest = platform === 'darwin'
+          ? path.join(extractPath, 'Electron.app', 'Contents', 'Resources', 'openclaw')
+          : path.join(extractPath, 'resources', 'openclaw');
+
+        try {
+          await fs.copy(path.resolve(__dirname, 'packages/openclaw'), dest, { dereference: false });
+          done();
+        } catch (err) {
+          done(err);
+        }
+      }
+    ]
   },
   rebuildConfig: {},
   makers: [

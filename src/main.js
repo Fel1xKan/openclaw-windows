@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
+import fsExtra from 'fs-extra';
 import { spawn } from 'node:child_process';
 import http from 'node:http';
 import https from 'node:https';
@@ -46,17 +47,7 @@ function getRuntimePath() {
  * Recursively copy a directory, preserving structure.
  */
 async function copyDir(src, dest) {
-  await fsp.mkdir(dest, { recursive: true });
-  const entries = await fsp.readdir(src, { withFileTypes: true });
-  for (const entry of entries) {
-    const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
-    if (entry.isDirectory()) {
-      await copyDir(srcPath, destPath);
-    } else {
-      await fsp.copyFile(srcPath, destPath);
-    }
-  }
+  await fsExtra.copy(src, dest, { dereference: false });
 }
 
 /**
