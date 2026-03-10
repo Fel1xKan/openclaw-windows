@@ -8,6 +8,7 @@ import https from 'node:https';
 import { pipeline } from 'node:stream/promises';
 import { createGunzip } from 'node:zlib';
 import started from 'electron-squirrel-startup';
+import fsExtra from 'fs-extra';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -46,17 +47,14 @@ function getRuntimePath() {
  * Recursively copy a directory, preserving structure.
  */
 async function copyDir(src, dest) {
-  await fsp.mkdir(dest, { recursive: true });
-  const entries = await fsp.readdir(src, { withFileTypes: true });
-  for (const entry of entries) {
-    const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
-    if (entry.isDirectory()) {
-      await copyDir(srcPath, destPath);
-    } else {
-      await fsp.copyFile(srcPath, destPath);
+  await fsExtra.copy(src, dest, {
+    preserveTimestamps: true,
+    dereference: false, // Don't follow symlinks
+    filter: (src) => {
+      // It's usually safer and faster to not copy node_modules symlinks that cause ELOOP
+      return true;
     }
-  }
+  });
 }
 
 /**
