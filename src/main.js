@@ -47,7 +47,14 @@ function getRuntimePath() {
  * Recursively copy a directory, preserving structure.
  */
 async function copyDir(src, dest) {
-  await fsExtra.copy(src, dest, { dereference: false });
+  await fsExtra.copy(src, dest, {
+    preserveTimestamps: true,
+    dereference: false, // Don't follow symlinks
+    filter: (src) => {
+      // It's usually safer and faster to not copy node_modules symlinks that cause ELOOP
+      return true;
+    }
+  });
 }
 
 /**
