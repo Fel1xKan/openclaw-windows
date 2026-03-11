@@ -37,6 +37,3 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Build (Vite + Electron Forge)
-        run: npm run package
